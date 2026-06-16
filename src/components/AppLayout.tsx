@@ -1,6 +1,8 @@
 import { AppShell, Text } from '@mantine/core';
 import { NavLink as RouterNavLink, Outlet } from 'react-router-dom';
-import { FlaskConical, BookOpen, Clock, BookMarked } from 'lucide-react';
+import { FlaskConical, BookOpen, Clock, BookMarked, Settings } from 'lucide-react';
+import { useState } from 'react';
+import DataManagerModal from './DataManagerModal';
 
 const navItems = [
   { label: '工作台', icon: FlaskConical, path: '/' },
@@ -10,6 +12,8 @@ const navItems = [
 ];
 
 export default function AppLayout() {
+  const [dataManagerOpen, setDataManagerOpen] = useState(false);
+
   return (
     <AppShell
       header={{ height: 60 }}
@@ -47,8 +51,8 @@ export default function AppLayout() {
         />
       </AppShell.Header>
 
-      <AppShell.Navbar style={{ backgroundColor: '#E8E4E0' }}>
-        <div style={{ padding: '12px 8px' }}>
+      <AppShell.Navbar style={{ backgroundColor: '#E8E4E0', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '12px 8px', flex: 1 }}>
           {navItems.map((item) => (
             <RouterNavLink
               key={item.path}
@@ -74,11 +78,42 @@ export default function AppLayout() {
             </RouterNavLink>
           ))}
         </div>
+        <div style={{ padding: '12px 8px', borderTop: '1px solid #C4A882' }}>
+          <button
+            onClick={() => setDataManagerOpen(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 10,
+              padding: '10px 14px',
+              width: '100%',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              color: '#8B6F4E',
+              fontWeight: 400,
+              borderRadius: 8,
+              fontSize: 14,
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#D4C4A8';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <Settings size={18} strokeWidth={1.8} />
+            <span>数据管理</span>
+          </button>
+        </div>
       </AppShell.Navbar>
 
       <AppShell.Main style={{ backgroundColor: '#F5F1EB', minHeight: 'calc(100vh - 60px)' }}>
         <Outlet />
       </AppShell.Main>
+
+      <DataManagerModal opened={dataManagerOpen} onClose={() => setDataManagerOpen(false)} />
     </AppShell>
   );
 }
