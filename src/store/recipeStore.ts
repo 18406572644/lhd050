@@ -135,7 +135,20 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
   },
 
   resetAdvancedFilter() {
-    set({ advancedFilter: { ...DEFAULT_ADVANCED_FILTER } });
+    set({
+      advancedFilter: {
+        includeMaterials: [],
+        excludeMaterials: [],
+        weightMin: null,
+        weightMax: null,
+        materialCountMin: null,
+        materialCountMax: null,
+        dateRangeStart: null,
+        dateRangeEnd: null,
+        datePreset: null,
+        deviationMax: null,
+      },
+    });
   },
 
   setAdvancedSearchOpen(open) {
@@ -163,7 +176,20 @@ export const useRecipeStore = create<RecipeState>((set, get) => ({
   applyFilterPreset(id) {
     const preset = get().filterPresets.find((p) => p.id === id);
     if (preset) {
-      set({ advancedFilter: { ...preset.filter } });
+      set({
+        advancedFilter: {
+          includeMaterials: [...preset.filter.includeMaterials],
+          excludeMaterials: [...preset.filter.excludeMaterials],
+          weightMin: preset.filter.weightMin,
+          weightMax: preset.filter.weightMax,
+          materialCountMin: preset.filter.materialCountMin,
+          materialCountMax: preset.filter.materialCountMax,
+          dateRangeStart: preset.filter.dateRangeStart,
+          dateRangeEnd: preset.filter.dateRangeEnd,
+          datePreset: preset.filter.datePreset,
+          deviationMax: preset.filter.deviationMax,
+        },
+      });
     }
   },
 

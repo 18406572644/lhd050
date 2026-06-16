@@ -169,6 +169,11 @@ export default function Recipes() {
     closePresetModal();
   };
 
+  const handleResetAllFilters = () => {
+    resetAdvancedFilter();
+    setSelectedPresetId(null);
+  };
+
   const getCategoryName = (catId: string) => {
     const cat = categories.find((c) => c.id === catId);
     return cat?.name || '';
@@ -456,7 +461,7 @@ export default function Recipes() {
                   size="xs"
                   variant="subtle"
                   color="gray"
-                  onClick={resetAdvancedFilter}
+                  onClick={handleResetAllFilters}
                 >
                   重置
                 </Button>
@@ -512,8 +517,8 @@ export default function Recipes() {
                   <NumberInput
                     label="最小 (g)"
                     placeholder="不限"
-                    value={advancedFilter.weightMin}
-                    onChange={(v) => setAdvancedFilter({ weightMin: v === '' ? null : Number(v) })}
+                    value={advancedFilter.weightMin === null ? '' : advancedFilter.weightMin}
+                    onChange={(v) => setAdvancedFilter({ weightMin: v === '' || v === null ? null : Number(v) })}
                     size="xs"
                     min={0}
                     decimalScale={2}
@@ -525,8 +530,8 @@ export default function Recipes() {
                   <NumberInput
                     label="最大 (g)"
                     placeholder="不限"
-                    value={advancedFilter.weightMax}
-                    onChange={(v) => setAdvancedFilter({ weightMax: v === '' ? null : Number(v) })}
+                    value={advancedFilter.weightMax === null ? '' : advancedFilter.weightMax}
+                    onChange={(v) => setAdvancedFilter({ weightMax: v === '' || v === null ? null : Number(v) })}
                     size="xs"
                     min={0}
                     decimalScale={2}
@@ -545,8 +550,8 @@ export default function Recipes() {
                   <NumberInput
                     label="最少"
                     placeholder="不限"
-                    value={advancedFilter.materialCountMin}
-                    onChange={(v) => setAdvancedFilter({ materialCountMin: v === '' ? null : Number(v) })}
+                    value={advancedFilter.materialCountMin === null ? '' : advancedFilter.materialCountMin}
+                    onChange={(v) => setAdvancedFilter({ materialCountMin: v === '' || v === null ? null : Number(v) })}
                     size="xs"
                     min={1}
                     styles={{
@@ -557,8 +562,8 @@ export default function Recipes() {
                   <NumberInput
                     label="最多"
                     placeholder="不限"
-                    value={advancedFilter.materialCountMax}
-                    onChange={(v) => setAdvancedFilter({ materialCountMax: v === '' ? null : Number(v) })}
+                    value={advancedFilter.materialCountMax === null ? '' : advancedFilter.materialCountMax}
+                    onChange={(v) => setAdvancedFilter({ materialCountMax: v === '' || v === null ? null : Number(v) })}
                     size="xs"
                     min={1}
                     styles={{
@@ -570,9 +575,31 @@ export default function Recipes() {
               </Stack>
 
               <Stack gap="xs">
-                <Group gap={4}>
-                  <Clock size={14} style={{ color: '#8B6F4E' }} />
-                  <Text size="sm" fw={500} style={{ color: '#5c4a32' }}>更新时间</Text>
+                <Group gap={4} justify="space-between" wrap="nowrap">
+                  <Group gap={4}>
+                    <Clock size={14} style={{ color: '#8B6F4E' }} />
+                    <Text size="sm" fw={500} style={{ color: '#5c4a32' }}>更新时间</Text>
+                  </Group>
+                  {(advancedFilter.datePreset !== null ||
+                    advancedFilter.dateRangeStart !== null ||
+                    advancedFilter.dateRangeEnd !== null) && (
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      color="gray"
+                      p={4}
+                      onClick={() => setAdvancedFilter({
+                        datePreset: null,
+                        dateRangeStart: null,
+                        dateRangeEnd: null,
+                      })}
+                    >
+                      <Group gap={4} wrap="nowrap">
+                        <X size={12} />
+                        <Text size="xs">清除</Text>
+                      </Group>
+                    </Button>
+                  )}
                 </Group>
                 <SegmentedControl
                   value={advancedFilter.datePreset || 'all'}
@@ -605,6 +632,7 @@ export default function Recipes() {
                         dateRangeStart: date ? date.toISOString().split('T')[0] : null,
                       })}
                       size="xs"
+                      clearable
                       styles={{
                         input: { fontSize: '0.75rem' },
                         label: { fontSize: '0.75rem', marginBottom: 4 },
@@ -618,6 +646,7 @@ export default function Recipes() {
                         dateRangeEnd: date ? date.toISOString().split('T')[0] : null,
                       })}
                       size="xs"
+                      clearable
                       styles={{
                         input: { fontSize: '0.75rem' },
                         label: { fontSize: '0.75rem', marginBottom: 4 },
