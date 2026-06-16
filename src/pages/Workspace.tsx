@@ -29,6 +29,7 @@ export default function Workspace() {
   const setTargetTotal = useWorkspaceStore((s) => s.setTargetTotal);
   const saveToHistory = useWorkspaceStore((s) => s.saveToHistory);
   const addCustomMaterial = useWorkspaceStore((s) => s.addCustomMaterial);
+  const addCustomMaterialWithEncyclopedia = useWorkspaceStore((s) => s.addCustomMaterialWithEncyclopedia);
 
   const recipes = useRecipeStore((s) => s.recipes);
   const loadRecipes = useRecipeStore((s) => s.loadRecipes);
@@ -299,6 +300,7 @@ export default function Workspace() {
         opened={materialModalOpened}
         onClose={closeMaterialModal}
         onAdd={addCustomMaterial}
+        onAddWithEncyclopedia={addCustomMaterialWithEncyclopedia}
       />
     </Stack>
   );

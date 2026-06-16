@@ -1,10 +1,11 @@
 import { AppShell, Text } from '@mantine/core';
 import { NavLink as RouterNavLink, Outlet } from 'react-router-dom';
-import { FlaskConical, BookOpen, Clock } from 'lucide-react';
+import { FlaskConical, BookOpen, Clock, BookMarked } from 'lucide-react';
 
 const navItems = [
   { label: '工作台', icon: FlaskConical, path: '/' },
   { label: '配方管理', icon: BookOpen, path: '/recipes' },
+  { label: '香材百科', icon: BookMarked, path: '/encyclopedia' },
   { label: '历史记录', icon: Clock, path: '/history' },
 ];
 

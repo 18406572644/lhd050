@@ -1,8 +1,9 @@
 import { create } from 'zustand';
-import type { WorkspaceItem, IncenseMaterial } from '@/types';
+import type { WorkspaceItem, IncenseMaterial, EncyclopediaEntry } from '@/types';
 import { DEVIATION_THRESHOLD } from '@/types';
 import { materialApi } from '@/api/materialApi';
 import { historyApi } from '@/api/historyApi';
+import { encyclopediaApi } from '@/api/encyclopediaApi';
 
 interface WorkspaceState {
   items: WorkspaceItem[];
@@ -21,6 +22,10 @@ interface WorkspaceState {
   setTargetTotal: (target: number) => void;
   saveToHistory: (name: string, recipeId?: string) => void;
   addCustomMaterial: (material: Omit<IncenseMaterial, 'id'>) => void;
+  addCustomMaterialWithEncyclopedia: (
+    material: Omit<IncenseMaterial, 'id'>,
+    encyclopedia: Omit<EncyclopediaEntry, 'id' | 'contributor' | 'createdAt' | 'updatedAt' | 'materialId'>
+  ) => void;
 }
 
 function computeDeviation(items: WorkspaceItem[], targetTotal: number): { deviation: number; status: 'normal' | 'warning' | 'error' } {
@@ -111,6 +116,20 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   addCustomMaterial(material: Omit<IncenseMaterial, 'id'>) {
     materialApi.add(material);
+    get().loadMaterials();
+  },
+
+  addCustomMaterialWithEncyclopedia(
+    material: Omit<IncenseMaterial, 'id'>,
+    encyclopedia: Omit<EncyclopediaEntry, 'id' | 'contributor' | 'createdAt' | 'updatedAt' | 'materialId'>
+  ) {
+    const newMaterial = materialApi.add(material);
+    encyclopediaApi.add({ ...encyclopedia, materialId: newMaterial.id });
+    materialApi.update(newMaterial.id, { encyclopediaId: '' });
+    const newEncyclopedia = encyclopediaApi.getByMaterialId(newMaterial.id);
+    if (newEncyclopedia) {
+      materialApi.update(newMaterial.id, { encyclopediaId: newEncyclopedia.id });
+    }
     get().loadMaterials();
   },
 }));
